@@ -8,16 +8,17 @@
  * @author Coby Tamayo
  */
 class RobotType extends CustomPostType {
-    protected $name = 'robot';
 
-    protected $args = array(
+    protected static $name = 'robot';
+
+    protected static $args = array(
         'label'         => 'Robots',
         'description'   => 'I, for one, welcome our new Robot Overlords...',
         'public'		=> true,
         'supports'		=> array( 'title', 'editor', 'thumbnail', 'excerpt', ),
     );
 
-    protected $meta = array(
+    protected static $meta = array(
         // The first meta box, #disposition, will capture info about the robot's
         // personality, if robots can be said to possess such things
         'disposition' => array (

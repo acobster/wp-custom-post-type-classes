@@ -7,7 +7,7 @@ abstract class CustomPostType {
      * http://codex.wordpress.org/Function_Reference/register_post_type
      * @var string
      */
-    protected $name;
+    protected static $name;
 
     /**
      * Settings for the post type's behavior;
@@ -15,34 +15,38 @@ abstract class CustomPostType {
      * http://codex.wordpress.org/Function_Reference/register_post_type
      * @var array
      */
-    protected $args;
+    protected static $args;
 
     /**
-     *
+     * The post_meta configuration for this custom post type
      * @var array
      */
-    protected $meta;
-
-    protected $data;
+    protected static $meta;
 
     /**
-     *
+     * Data from a given post, including post_meta data, gets loaded into here
+     * @var array
      */
+    protected $data;
+
     public function __construct() {
         $this->data = array();
     }
 
-    public function init( $action = 'init' ) {
-        add_action( $action, array( $this, 'register' ) );
+    public static function init( $action = 'init' ) {
+        // Use Late Static Binding to call register() on the subclass,
+        // not the CustomPostType class
+        add_action( $action, array( get_called_class(), 'register' ) );
 
-        foreach( $this->meta as $id => $info ) {
-            $meta = new CustomPostMetaBox( $id, $info, $this->name );
+        // Initialize meta boxes
+        foreach( static::$meta as $id => $info ) {
+            $meta = new CustomPostMetaBox( $id, $info, static::$name );
             $meta->init();
         }
     }
 
-    public function register() {
-        register_post_type( $this->name, $this->args );
+    public static function register() {
+        register_post_type( static::$name, static::$args );
     }
 }
 
