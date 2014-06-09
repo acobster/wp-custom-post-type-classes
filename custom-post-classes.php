@@ -2,8 +2,7 @@
 
 /*
 Plugin Name: Custom Post Classes
-Description: A standardized way to create custom post types in a more object-oriented way,
-emphasizing the DRY principle
+Description: A standardized way to create custom post types in a DRY, OO way
 Version: 1.0
 Author: Coby Tamayo
 Author URI: http://www.tamayoweb.net
