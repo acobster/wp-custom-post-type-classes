@@ -88,5 +88,78 @@ abstract class CustomPostType {
     public static function register() {
         register_post_type( static::$name, static::$args );
     }
+
+
+    /* PUBLIC API CONFIGURATION GETTERS */
+
+    /**
+     * Get the meta box configuration for this post type
+     * @return array
+     */
+    public static function getMetaBoxConfiguration() {
+        return static::$meta;
+    }
+
+    /**
+     * Get the meta box names for this post type
+     * @return array
+     */
+    public static function getMetaBoxNames() {
+        return array_keys( static::getMetaBoxConfiguration() );
+    }
+
+    /**
+     * Get the meta field configurations for this post type
+     * @return array
+     */
+    public static function getMetaFields() {
+        $fields = array();
+        foreach( static::getMetaBoxConfiguration() as $id => $config ) {
+            foreach( $config['fields'] as $name => $value ) {
+                $fields[$name] = $value;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get the meta field names for this post type
+     * @return array
+     */
+    public static function getMetaFieldNames() {
+        $names = array();
+        foreach( static::getMetaFields() as $key => $field ) {
+            // Get the field name as a string if this is a numeric index
+            $names[] = is_int($key) ? "$field" : $key;
+        }
+        return $names;
+    }
+
+
+    /* INSTANCE METHODS */
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function __get($name) {
+        if( array_key_exists($name, $this->data) ) {
+            return $this->data[$name];
+        } else if( array_key_exists("_$name", $this->data) ) {
+            return $this->data[$name];
+        } else {
+            return null;
+        }
+    }
+
+    public function __call($method, $args=array()) {
+        $reflection = new ReflectionClass( $this->wp_post );
+
+        if( $reflection->hasMethod($method) ) {
+            return call_user_func_array(array($this->wp_post, $method), $args);
+        } else {
+            return null;
+        }
+    }
 }
 
