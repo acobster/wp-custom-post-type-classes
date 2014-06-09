@@ -20,10 +20,4 @@ require_once CPC_PLUGIN_DIR . 'CustomPostField.php';
 // Uncomment below to see an example custom post in action.
 // Make sure to view it from the front end as well as the admin!
 
-
-
-require_once CPC_PLUGIN_DIR . 'Example.php';
-
-$example = new RobotType();
-$example->init();
-
+// require CPC_PLUGIN_DIR . 'example/robot_example.php';
