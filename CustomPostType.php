@@ -35,6 +35,16 @@ abstract class CustomPostType {
      */
     protected $wp_post;
 
+    public static function all() {
+        $args = array(
+            'post_type' => static::$name,
+        );
+
+        $query = new WP_Query( $args );
+
+        return $query;
+    }
+
     public static function fetch( $post, $meta=true ) {
         $post = get_post( $post );
         $data = get_post( $post, ARRAY_A );
@@ -76,9 +86,11 @@ abstract class CustomPostType {
         // not the CustomPostType class
         add_action( $action, array( get_called_class(), 'register' ) );
 
-        // Initialize meta boxes
-        foreach( static::$meta as $id => $config ) {
-            CustomPostMetaBox::init( $id, $config, static::$name );
+        if( ! empty(static::$meta) ) {
+            // Initialize meta boxes
+            foreach( static::$meta as $id => $config ) {
+                CustomPostMetaBox::init( $id, $config, static::$name );
+            }
         }
     }
 
@@ -114,11 +126,16 @@ abstract class CustomPostType {
      */
     public static function getMetaFields() {
         $fields = array();
-        foreach( static::getMetaBoxConfiguration() as $id => $config ) {
-            foreach( $config['fields'] as $name => $value ) {
-                $fields[$name] = $value;
+        $config = static::getMetaBoxConfiguration();
+
+        if( ! empty($config) ) {
+            foreach( $config as $id => $config ) {
+                foreach( $config['fields'] as $name => $value ) {
+                    $fields[$name] = $value;
+                }
             }
         }
+
         return $fields;
     }
 
