@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Custom Post Classes
+Plugin Name: Custom Post Type Classes
 Description: A standardized way to create custom post types in a DRY, OO way
 Version: 1.0
 Author: Coby Tamayo
