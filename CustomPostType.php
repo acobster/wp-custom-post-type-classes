@@ -53,11 +53,8 @@ abstract class CustomPostType {
             $metaData = get_post_meta( $post->ID );
 
             foreach( static::getMetaFieldNames() as $field ) {
-                // We always use "custom" fields, so prefix with "_"
-                // to avoid collisions
-                $fieldName = "_$field";
-                if( ! empty($metaData[$fieldName]) ) {
-                    $data[$fieldName] = $metaData[$fieldName][0];
+                if( ! empty($metaData[$field]) ) {
+                    $data[$field] = $metaData[$field][0];
                 }
             }
         }
@@ -162,7 +159,7 @@ abstract class CustomPostType {
     public function __get($name) {
         if( array_key_exists($name, $this->data) ) {
             return $this->data[$name];
-        } else if( array_key_exists("_$name", $this->data) ) {
+        } else if( array_key_exists($name, $this->data) ) {
             return $this->data[$name];
         } else {
             return null;

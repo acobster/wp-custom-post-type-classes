@@ -5,7 +5,7 @@
  * @author Coby Tamayo
  */
 class CustomPostField {
-    
+
     protected $name;
     protected $id;
     protected $type;
@@ -16,7 +16,7 @@ class CustomPostField {
     protected $before;
     protected $after;
     protected $class;
-    
+
     public static function create( $name, $info ) {
         switch( $info['type'] ) {
             case 'checkbox' :
@@ -26,15 +26,15 @@ class CustomPostField {
                 return new TextareaField( $name, $info );
                 break;
             default :
-                return new CustomPostField( $name, $info ); 
+                return new CustomPostField( $name, $info );
         }
     }
-    
+
     public function __construct( $name, $info ) {
         $this->name = $name;
-                            
+
         $extra = array(
-        	'type'          => 'text', 
+        	'type'          => 'text',
             'label'         => '',
             'labelClass'	=> '',
             'labelAfter'    => false,
@@ -44,63 +44,63 @@ class CustomPostField {
             'class'         => '',
             'default'       => '',
         );
-        
+
         foreach( $extra as $x => $default ) {
             $this->$x = isset( $info[$x] ) ? $info[$x] : $default;
         }
-        
+
         $this->id = "{$this->name}_{$this->type}";
     }
-    
+
     public function getSubmitted() {
         return $_POST[$this->name];
     }
-    
-    
-    
+
+
+
     /************************ MODEL METHODS *************************/
-    
+
     protected function getData( $postId ) {
-        $value = maybe_unserialize( get_post_meta( $postId, "_{$this->name}" ) );
+        $value = maybe_unserialize( get_post_meta( $postId, $this->name ) );
         return $value[0];
     }
-    
-    
-    
+
+
+
     /************************ VIEW METHODS *************************/
-    
+
     public function getMetaHtml( $postId ) {
         return $this->before
             . $this->maybeLabel( $this->getInputHtml( $postId ) )
             . $this->after;
     }
-    
+
     protected function getInputHtml( $postId ) {
         $value = $this->getData( $postId );
-        
+
         return
         	"<input id=\"{$this->id}\" type=\"{$this->type}\" "
             . "name=\"{$this->name}\" class=\"{$this->class}\" "
             . "value=\"$value\" />";
     }
-    
+
     protected function getMetaLabel() {
-        
+
         if( $this->noLabel ) {
             return '';
         } else {
-            
+
             $label = empty( $this->label )
                 ? ucfirst( $this->name )
                 : $this->label;
-            
+
             return "<label class=\"$label\" for=\"{$this->id}\">$label</label>";
         }
     }
-    
+
     protected function maybeLabel( $input ) {
         $label = $this->getMetaLabel();
-        
+
         return ( $this->labelAfter ? '' : "$label&nbsp;" )
             . $input
             . ( $this->labelAfter ? "&nbsp;$label" : '' );
@@ -110,20 +110,20 @@ class CustomPostField {
 
 
 class CheckboxField extends CustomPostField {
-    
+
     public function getInputHtml( $postId ) {
 
         $stored = $this->getData( $postId );
         $checked = empty( $stored )
             ? ''
             : 'checked';
-        
-        return 
+
+        return
         	"<input id=\"{$this->id}\" type=\"{$this->type}\" "
         	. "name=\"{$this->name}\" class=\"{$this->class}\" "
             . "value=\"1\" $checked />";
     }
-    
+
     public function getSubmitted() {
         return isset( $_POST[$this->name] )
             ? 1
@@ -134,12 +134,12 @@ class CheckboxField extends CustomPostField {
 
 
 class TextareaField extends CustomPostField {
-    
+
     public function getInputHtml( $postId ) {
-        
+
         $value = $this->getData( $postId );
-        
-        return 
+
+        return
         	"<textarea id=\"{$this->id}\" name=\"{$this->name}\" "
             . "class=\"{$this->class}\">$value</textarea>";
     }

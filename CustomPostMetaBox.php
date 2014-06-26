@@ -93,7 +93,7 @@ class CustomPostMetaBox {
         {
             foreach( static::$fields as $name => $field ) {
                 $value = $field->getSubmitted();
-                update_post_meta( $postId, "_$name", maybe_serialize( $value ) );
+                update_post_meta( $postId, $name, maybe_serialize( $value ) );
             }
         }
     }
